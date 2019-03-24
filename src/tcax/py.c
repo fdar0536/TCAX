@@ -222,7 +222,7 @@ PY_Error_Code tcaxpy_fin_python() {
     return py_error_success;
 }
 
-#if defined WIN32
+#ifdef _WIN32
 static void _tcaxpy_sz_unicode_to_ansi(const wchar_t *uni, char **ansi) {
     int size;
     char *sz;
@@ -282,7 +282,7 @@ const char *tcaxpy_make_py_token_filename(const char *filename, char **pTokenFil
     return (const char *)tokenFilename;
 }
 
-#if defined WIN32
+#ifdef _WIN32
 PY_Error_Code tcaxpy_create_py_token(const char *filename) {
     FILE *fp;
     fp = fopen(filename, "w");
@@ -386,7 +386,7 @@ static PY_Error_Code _tcaxpy_write_unicode_to_utf8_file(const char *filename, co
         fclose(fp);
         return py_error_file_while_writing;
     }
-#if defined WIN32
+#ifdef _WIN32
     size = WideCharToMultiByte(CP_UTF8, 0, uni, count, NULL, 0, NULL, NULL);
     utf8String = (char *)malloc(size);
     WideCharToMultiByte(CP_UTF8, 0, uni, count, utf8String, size, NULL, NULL);
@@ -407,6 +407,7 @@ static PY_Error_Code _tcaxpy_write_unicode_to_utf8_file(const char *filename, co
 }
 
 PY_Error_Code tcaxpy_create_py_template(const char *filename) {
+#ifdef _WIN32
     const wchar_t *py_file_buf = L"from tcaxPy import *\r\n\
 \r\n\
 \r\n\
@@ -446,9 +447,47 @@ def tcaxPy_Main(_i, _j, _n, _start, _end, _elapk, _k, _x, _y, _a, _txt):\r\n\
 \r\n\
 \r\n\
 \r\n";
-#ifdef _WIN32
     return _tcaxpy_write_unicode_to_utf8_file(filename, py_file_buf, wcslen(py_file_buf));
 #else
+    const wchar_t *py_file_buf = L"from tcaxPy import *\
+\n\
+\n\
+def tcaxPy_Init():\n\
+    print('Tips: you can initialize your global variables here.')\n\
+    print('This function will be executed once if you set `< tcaxpy init = true >\\'')\n\
+    print(GetHelp())\n\
+\n\
+\n\
+def tcaxPy_User():\n\
+    print('User defined function.')\n\
+    print('This function will be executed once if you set `< tcaxpy user = true >\\'')\n\
+    print('Otherwise, tcaxPy_Main will be executed (many times)')\n\
+\n\
+\n\
+def tcaxPy_Fin():\n\
+    print('Tips: you can finalize your global variables here.')\n\
+    print('This function will be executed once if you set `< tcaxpy fin = true >\\'')\n\
+    print('Note: you do not need to finalize the global variables got from function GetVal()')\n\
+\n\
+\n\
+def tcaxPy_Main(_i, _j, _n, _start, _end, _elapk, _k, _x, _y, _a, _txt):\n\
+\n\
+    ASS_BUF  = []        # used for saving ASS FX lines\n\
+    TCAS_BUF = []        # used for saving TCAS FX raw data\n\
+\n\
+    #############################\n\
+    # TODO: write your codes here #\n\
+\n\
+    ass_main(ASS_BUF, SubL(_start, _end), pos(_x, _y) + K(_elapk) + K(_k), _txt)\n\
+\n\
+    #############################\n\
+\n\
+    return (ASS_BUF, TCAS_BUF)\r\n\
+\n\
+\n\
+\n\
+\n\
+\n";
     return _tcaxpy_write_unicode_to_utf8_file(filename, py_file_buf);
 #endif
 }
@@ -834,7 +873,7 @@ static int _tcaxpy_is_specified_py_module_existed(const char *filename) {
     memcpy(pycFilename, filename, len * sizeof(char));
     pycFilename[len] = 'c';
     pycFilename[len + 1] = '\0';
-#if defined WIN32
+#ifdef _WIN32
     if (GetFileAttributesA(filename) == INVALID_FILE_ATTRIBUTES && GetFileAttributesA(pycFilename) == INVALID_FILE_ATTRIBUTES) {
         free(pycFilename);
         return 0;
@@ -1165,4 +1204,3 @@ void tcaxpy_fin_tcaxpy(PY_pTcaxPy pTcaxPy) {
     Py_CLEAR(pTcaxPy->pyUserModule);
     Py_CLEAR(pTcaxPy->pyBaseModule);
 }
-
