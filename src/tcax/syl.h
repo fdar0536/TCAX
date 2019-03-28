@@ -1,4 +1,4 @@
-﻿/* 
+/* 
  *  Copyright (C) 2011 milkyjing <milkyjing@gmail.com>
  *
  *  This Program is free software; you can redistribute it and/or modify

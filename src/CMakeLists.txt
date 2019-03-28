@@ -3,7 +3,7 @@ project(TCAX CXX C)
 set(CMAKE_CXX_STANDARD 14)
 
 message("cmake cxx compiler is ${CMAKE_CXX_COMPILER}")
-set(CMAKE_CXX_FLAGS "-Wl,--unresolved-symbols=report-all -Wall -Wextra -Werror -Wno-enum-compare -Wno-sign-compare")
+set(CMAKE_CXX_FLAGS "-Wl,--unresolved-symbols=report-all -Wall -Wextra -Werror -Wno-enum-compare -Wno-sign-compare -Wno-int-to-pointer-cast")
 set(CMAKE_C_FLAGS "-Wl,--unresolved-symbols=report-all -Wall -Wextra -Werror -Wno-sign-compare -Wno-int-to-pointer-cast")
 
 #boost

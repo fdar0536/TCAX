@@ -1,4 +1,4 @@
-﻿/* 
+/* 
  *  Copyright (C) 2011 milkyjing <milkyjing@gmail.com>
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -26,8 +26,9 @@
 #include <windows.h>
 #include "Python.h"
 #else
+#include <string>
 #include <python3.7m/Python.h>
-#include <locale.h>
+#include "boost/locale.hpp"
 #endif  /* WIN32 */
 
 #define TCAXPY_VERSION 0x00006000    /**< High word of TCAXPY_VERSION indicates major tcaxpy version, and low word indicates minor version */
@@ -179,12 +180,6 @@ typedef struct _py_init_data {
     PY_TmHoriData tmHoriData;     /**< horizontal tm info */
     PY_TmVertData tmVertData;     /**< vertical tm info */
 } PY_InitData, *PY_pInitData;
-
-
-/* Inhibit C++ name-mangling for tcaxpy functions but not for system calls. */
-#ifdef __cplusplus
-extern "C" {
-#endif    /* __cplusplus */
 
 /**
  * Convert a file (ansi/unicode/unicode big endian) to utf-8 encoded. 
@@ -342,10 +337,6 @@ extern PY_Error_Code tcaxpy_script_func_fin(const PY_pTcaxPy pTcaxPy);
  * @param pTcaxPy pointer to PY_TcaxPy structure that is going to be finalized
  */
 extern void tcaxpy_fin_tcaxpy(PY_pTcaxPy pTcaxPy);
-
-#ifdef __cplusplus
-}
-#endif    /* __cplusplus */
 
 #endif    /* TCAXPY_PY_H */
 

@@ -241,14 +241,11 @@ static void _tcaxpy_sz_ansi_to_unicode(const char *ansi, wchar_t **uni) {
     *uni = sz;
 }
 #else
-static void _tcaxpy_sz_ansi_to_unicode(const char *ansi, wchar_t **uni) {
-    int count;
-    wchar_t *sz;
-    setlocale(LC_CTYPE, "");
-    count = mbstowcs(NULL, ansi, 0) + 1;
-    sz = (wchar_t *)malloc(count * sizeof(wchar_t));
-    mbstowcs(sz, ansi, count);
-    *uni = sz;
+static void _tcaxpy_sz_ansi_to_unicode(const char *ansi, const wchar_t **uni)
+{
+    std::string src(ansi);
+    std::wstring dst = boost::locale::conv::utf_to_utf<wchar_t>(src);
+    *uni = dst.c_str();
 }
 #endif  /* WIN32 */
 
@@ -501,9 +498,17 @@ static void _tcaxpy_make_base_py_module_path(const char *directory, char **pPyMo
     count = strlen(directory);
     pyModulePath = (char *)malloc((count + 1 + count + 1 + len + 1) * sizeof(char));
     memcpy(pyModulePath, directory, count * sizeof(char));
+#ifdef _WIN32
     pyModulePath[count] = ';';
+#else
+    pyModulePath[count] = ':';
+#endif
     memcpy(pyModulePath + count + 1, directory, count * sizeof(char));
+#ifdef _WIN32
     pyModulePath[count + 1 + count] = '\\';
+#else
+    pyModulePath[count + 1 + count] = '/';
+#endif
     memcpy(pyModulePath + count + 1 + count + 1, TCAXPY_PY_LIB_FOLDER, len * sizeof(char));
     pyModulePath[count + 1 + count + 1 + len] = '\0';
     *pPyModulePath = pyModulePath;
@@ -512,7 +517,7 @@ static void _tcaxpy_make_base_py_module_path(const char *directory, char **pPyMo
 PY_Error_Code tcaxpy_init_base_py_module(PY_pTcaxPy pTcaxPy, const PY_pInitData pInitData) {
     int i, j, count;
     char *pyModulePath;
-    wchar_t *wcsPyModulePath;
+    const wchar_t *wcsPyModulePath;
     PyObject *pyArgs;
     PyObject *pyData;
     PyObject *pyDataFunc;
@@ -548,11 +553,11 @@ PY_Error_Code tcaxpy_init_base_py_module(PY_pTcaxPy pTcaxPy, const PY_pInitData 
     PyObject *py_bearingXV2D;
     /***/
     _tcaxpy_make_base_py_module_path(pInitData->directory, &pyModulePath);
+    printf("pyModulePath is: %s\n", pyModulePath);
     _tcaxpy_sz_ansi_to_unicode(pyModulePath, &wcsPyModulePath);
     free(pyModulePath);
     Py_SetPath(wcsPyModulePath);  /* set the module's directory */
-    free(wcsPyModulePath);
-    pTcaxPy->pyBaseModule = PyImport_ImportModuleNoBlock(TCAXPY_PY_MODULE_NAME);
+    pTcaxPy->pyBaseModule = PyImport_ImportModule(TCAXPY_PY_MODULE_NAME);
     if (!pTcaxPy->pyBaseModule) {
         PyErr_Print();
         /* PyErr_Clear(); */
@@ -968,7 +973,7 @@ PY_Error_Code tcaxpy_init_user_py_module(PY_pTcaxPy pTcaxPy, const char *directo
     char *pyFilename;
     char *tokenFilename;
     char *pyModulePath;
-    wchar_t *wcsPyModulePath;
+    const wchar_t *wcsPyModulePath;
     _tcaxpy_fin_user_py_module(pTcaxPy);
     _tcaxpy_get_py_module_name_and_dir(userPyFilename, &pyModuleName, &pyModuleDir);
     if (!pyModuleName) return py_error_null_pointer;
@@ -983,8 +988,7 @@ PY_Error_Code tcaxpy_init_user_py_module(PY_pTcaxPy pTcaxPy, const char *directo
     _tcaxpy_sz_ansi_to_unicode(pyModulePath, &wcsPyModulePath);
     free(pyModulePath);
     PySys_SetPath(wcsPyModulePath);
-    free(wcsPyModulePath);
-    pyModule = PyImport_ImportModuleNoBlock(pyModuleName);
+    pyModule = PyImport_ImportModule(pyModuleName);
     free(pyModuleName);
     if (!pyModule) {
         PyErr_Print();
@@ -992,7 +996,13 @@ PY_Error_Code tcaxpy_init_user_py_module(PY_pTcaxPy pTcaxPy, const char *directo
         return py_error_init_fail;
     }
     tcaxpy_make_py_token_filename(pyFilename, &tokenFilename);
-    if (tcaxpy_is_py_modified(pyFilename, tokenFilename) == py_error_file_modified) {    /* check if we need to reload the module */
+
+#ifdef _WIN32
+    if (tcaxpy_is_py_modified(pyFilename, tokenFilename) == py_error_file_modified) {
+#else
+    if (tcaxpy_is_py_modified() == py_error_file_modified) {
+#endif
+        /* check if we need to reload the module */
         free(pyFilename);
         free(tokenFilename);
         pTcaxPy->pyUserModule = PyImport_ReloadModule(pyModule);  // refresh the module

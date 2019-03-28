@@ -16,7 +16,7 @@ add_executable(tcax
         tccmap.h
         tccmap.c
         py.h
-        py.c
+        py.cpp
         main.cpp)
 
 #boost
