@@ -10,8 +10,8 @@ Visit TCAX homepage www.tcax.org for more info.
 
 ## Dependency
 
-- c++14
-- [Boost c++ Libraries](https://www.boost.org)
+- C++14
+- [Boost C++ Libraries](https://www.boost.org)
 - [libpng](http://www.libpng.org/pub/png/libpng.html)
 - [FreeType](https://www.freetype.org)
 - [Python3](https://www.python.org) or later
