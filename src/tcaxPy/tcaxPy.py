@@ -710,10 +710,10 @@ def Progress(i, j, file_id = 1, file_num = 1):
     for l in range(i):
         completed += __tcax_data[val_nTexts][l]
     completed += j + 1
-    utility().ShowProgress(total, completed, file_id - 1, file_num)
+    Utility().ShowProgress(total, completed, file_id - 1, file_num)
 
 def progress(completed, total):
-    ShowProgress(total, completed, 0, 1)
+    Utility().ShowProgress(total, completed, 0, 1)
 
 #--------------------------------------------- Advanced Function -------------------------------------------#
 
