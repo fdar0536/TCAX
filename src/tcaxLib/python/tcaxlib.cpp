@@ -43,7 +43,7 @@ BOOST_PYTHON_MODULE(tcaxLib)
     py::def("tcaxLibGetVersion", tcaxlib_get_version);                             //tcaxLibGetVersion()
     
     /* in pix.h */
-    py::class_<pix>("pix")
+    py::class_<pix>("Pix")
     .def("PixPoints",            &pix::pix_points)                                 //PixPoints(PIX)
     .def("BlankPix",             &pix::create_blank_pix)                           //BlankPix(width, height, rgba)
     .def("PixResize",            &pix::resample_py_pix)                            //PixResize(PIX, width, height)
@@ -70,7 +70,7 @@ BOOST_PYTHON_MODULE(tcaxLib)
     ;
 
     /* in file.h */
-    py::class_<file>("file", py::init<const char *, py::optional<const char *>>()) //file(ass_file, ass_header)
+    py::class_<file>("File", py::init<const char *, py::optional<const char *>>()) //file(ass_file, ass_header)
     .def("WriteAssFile",         &file::write_ass_file)                            //WriteAssFile(ASS_BUF)
     .def("reset",                &file::reset, file_reset_overloads())             //reset(ass_file, ass_header)
     .def("isSuccess",            &file::is_success)                                //isSuccess()
@@ -78,7 +78,7 @@ BOOST_PYTHON_MODULE(tcaxLib)
     ;
 
     /* in text.h */
-    py::class_<text>("text", py::init<const char *,
+    py::class_<text>("Text", py::init<const char *,
                                       int,
                                       int,
                                       int,
@@ -96,13 +96,13 @@ BOOST_PYTHON_MODULE(tcaxLib)
     ;
 
     /* in image.h */
-    py::class_<image>("image") //image()
+    py::class_<image>("Image") //image()
     .def("ImagePix",             &image::get_pix_from_image, ImagePix_overloads())  //ImagePix(filename, width = 0, height = 0)
     .def("SavePix",              &image::save_pix_to_image, SavePix_overloads())    //SavePix(filename, PIX, width = 0, height = 0)
     ;
 
     /* in utility.h */
-    py::class_<utility>("utility")
+    py::class_<utility>("Utility")
     .def("TextOutlineDraw",      &utility::get_text_outline_as_string)               //TextOutlineDraw(pyFont, text, x, y)
     .def("TextOutlineDraw",      &utility::get_text_outline_as_string_2)             //TextOutlineDraw(font_file, face_id, font_size, text, x, y)
     .def("IsCjk",                &utility::is_c_or_j_or_k)                           //IsCjk(text)
