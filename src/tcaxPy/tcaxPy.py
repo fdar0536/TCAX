@@ -692,7 +692,7 @@ def MakePath(FolderIndex = 0, ImageIndex = 0, MainFolder = 'src',
     return img_path
 
 def tcaxLog(info):
-    if (sys.platform == 'win32')
+    if (sys.platform == 'win32'):
         s = str(info) + '\r\n'
     else:
         s = str(info) + '\n'
