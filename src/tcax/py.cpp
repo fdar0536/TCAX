@@ -517,7 +517,11 @@ static void _tcaxpy_make_base_py_module_path(const char *directory, char **pPyMo
 PY_Error_Code tcaxpy_init_base_py_module(PY_pTcaxPy pTcaxPy, const PY_pInitData pInitData) {
     int i, j, count;
     char *pyModulePath;
+#ifdef _WIN32
+    wchar_t *wcsPyModulePath;
+#else
     const wchar_t *wcsPyModulePath;
+#endif
     PyObject *pyArgs;
     PyObject *pyData;
     PyObject *pyDataFunc;
@@ -553,7 +557,6 @@ PY_Error_Code tcaxpy_init_base_py_module(PY_pTcaxPy pTcaxPy, const PY_pInitData 
     PyObject *py_bearingXV2D;
     /***/
     _tcaxpy_make_base_py_module_path(pInitData->directory, &pyModulePath);
-    printf("pyModulePath is: %s\n", pyModulePath);
     _tcaxpy_sz_ansi_to_unicode(pyModulePath, &wcsPyModulePath);
     free(pyModulePath);
     Py_SetPath(wcsPyModulePath);  /* set the module's directory */
@@ -973,7 +976,11 @@ PY_Error_Code tcaxpy_init_user_py_module(PY_pTcaxPy pTcaxPy, const char *directo
     char *pyFilename;
     char *tokenFilename;
     char *pyModulePath;
+#ifdef _WIN32
+    wchar_t *wcsPyModulePath;
+#else
     const wchar_t *wcsPyModulePath;
+#endif
     _tcaxpy_fin_user_py_module(pTcaxPy);
     _tcaxpy_get_py_module_name_and_dir(userPyFilename, &pyModuleName, &pyModuleDir);
     if (!pyModuleName) return py_error_null_pointer;
