@@ -1,0 +1,3 @@
+[submodule "src/fontColor"]
+	path = src/fontColor
+	url = https://github.com/fdar0536/fontColor.git
