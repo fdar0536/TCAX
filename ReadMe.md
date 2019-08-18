@@ -21,5 +21,5 @@ Visit TCAX homepage www.tcax.org for more info.
 
 ## Note
 
-Now, this repo is kept for reference.
-It will not update anymore.
+**Now, this repo is kept for reference.**
+**It will not update anymore.**
