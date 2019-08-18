@@ -19,6 +19,7 @@ Visit TCAX homepage www.tcax.org for more info.
 - [L-SMASH Source](https://forum.doom9.org/showthread.php?t=167435)
 - [mvsfunc](https://github.com/HomeOfVapourSynthEvolution/mvsfunc) r8 or later
 
-## TODO
+## Note
 
-- No more only depend on windows
+Now, this repo is kept for reference.
+It will not update anymore.
